@@ -25,23 +25,23 @@ Cuenta de Google Cloud con BigQuery habilitado
 Google Cloud CLI instalado en tu sistema  
 
 ### Librerías
-pip install selenium
-pip install webdriver-manager
-pip install pandas
+pip install selenium  
+pip install webdriver-manager  
+pip install pandas  
 
 ### creación del entorno virtual y activación 
-py -m venv venv
+py -m venv venv  
 .\venv\Scripts\Activate 
 
 ### Ejecución del Script
-Clona este repositorio en tu máquina local.
-   git clone git@github.com:ornelamarinibegue/python-scraping-gcp.git
-   or 
-   git clone https://github.com/ornelamarinibegue/python-scraping-gcp.git
-   
-Navega al directorio del repositorio.
-   cd python-scraping-project/
-Ejecuta el comando docker build -t python_scraping_project . para construir la imagen Docker.
+Clona este repositorio en tu máquina local:  
+git clone git@github.com:ornelamarinibegue/python-scraping-gcp.git  
+or  
+git clone https://github.com/ornelamarinibegue/python-scraping-gcp.git  
+
+Navega al directorio del repositorio.  
+cd python-scraping-project/  
+Ejecuta el comando docker build -t python_scraping_project . para construir la imagen Docker.  
 Ejecuta el comando docker run python_scraping_project para ejecutar el contenedor Docker.
 
 ### Despliegue en Cloud Run
