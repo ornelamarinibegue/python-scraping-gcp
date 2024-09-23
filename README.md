@@ -20,9 +20,9 @@ python_scraping_project/
 ## Configuración
 
 ### Requisitos Previos
-Docker instalado en tu sistema
-Cuenta de Google Cloud con BigQuery habilitado
-Google Cloud CLI instalado en tu sistema
+Docker instalado en tu sistema  
+Cuenta de Google Cloud con BigQuery habilitado  
+Google Cloud CLI instalado en tu sistema  
 
 ### Librerías
 pip install selenium
@@ -50,9 +50,9 @@ Ejecuta el comando bash deploy.sh para desplegar la imagen Docker en Cloud Run.
 ## Configuración
 
 ### Variables de Entorno
-GOOGLE_CLOUD_PROJECT: ID de tu proyecto de Google Cloud
-BIGQUERY_DATASET: ID del dataset de BigQuery
-BIGQUERY_TABLE: ID de la tabla de BigQuery
+GOOGLE_CLOUD_PROJECT: ID de tu proyecto de Google Cloud  
+BIGQUERY_DATASET: ID del dataset de BigQuery  
+BIGQUERY_TABLE: ID de la tabla de BigQuery  
 
 ### Integración con BigQuery
 El script utiliza la biblioteca google-cloud-bigquery para interactuar con BigQuery. Debes tener configurada la variable de entorno GOOGLE_APPLICATION_CREDENTIALS con la ruta al archivo de la clave de tu cuenta de servicio.
@@ -66,6 +66,7 @@ Contribuciones
 
 Licencia
 Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
 
 
 
