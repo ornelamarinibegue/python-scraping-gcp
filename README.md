@@ -5,11 +5,16 @@ Este repositorio contiene un script en Python que realiza tareas de web scraping
 
 ## Estructura del Proyecto
 
-python_scraping_project/
-├── Dockerfile : Archivo que define cómo se construye la imagen de Docker.
-├── requirements.txt : Lista de dependencias de Python necesarias para el proyecto.
-├── deploy.sh : facilita el proceso de construcción, subida y despliegue de la aplicación en Google Cloud Run
-├── scraper.py : El script principal que contiene la lógica de scraping y contiene el código para procesar los datos obtenidos.
+python_scraping_project/  
+
+├── Dockerfile : Archivo que define cómo se construye la imagen de Docker.  
+
+├── requirements.txt : Lista de dependencias de Python necesarias para el proyecto.  
+
+├── deploy.sh : facilita el proceso de construcción, subida y despliegue de la aplicación en Google Cloud Run  
+
+├── scraper.py : El script principal que contiene la lógica de scraping y contiene el código para procesar los datos obtenidos.  
+
 └── README.md
 
 ## Configuración
@@ -61,6 +66,7 @@ Contribuciones
 
 Licencia
 Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
 
 
 
