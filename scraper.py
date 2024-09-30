@@ -11,6 +11,8 @@ from google.cloud import bigquery
 def extract_data(url):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
+    options.add_argument("--no-sandbox")  # Soluciona problemas de permisos
+    options.add_argument("--disable-dev-shm-usage")  # Soluciona problemas de recursos
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get(url)
 
