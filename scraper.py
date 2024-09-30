@@ -11,33 +11,59 @@ def extract_data(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get(url)
 
-    articles = driver.find_elements(By.CLASS_NAME, "article")
-    data = []
-    for article in articles:
-        try:
-            # Extraer el kicker (volanta)
-            kicker = article.find_element(By.CLASS_NAME, "volanta").text
-            
+    # Espera hasta que los artículos estén presentes
+    try:
+        WebDriverWait(driver, 20).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".contenedor_dato_modulo"))
+        )
+        
+        articles = driver.find_elements(By.CSS_SELECTOR, ".contenedor_dato_modulo")
+        data = []
+
+        for article in articles:
+            # Inicializa variables por defecto
+            kicker = "No disponible"
+            title = "No disponible"
+            link = "No disponible"
+            image = "No disponible"
+
+            # Extraer el kicker (volanta) si existe
+            try:
+                kicker = article.find_element(By.CSS_SELECTOR, ".volanta").text
+            except NoSuchElementException:
+                print("Kicker no disponible para este artículo.")
+
             # Extraer el título
-            title_element = article.find_element(By.CLASS_NAME, "titulo")
-            title = title_element.text
+            try:
+                title_element = article.find_element(By.CSS_SELECTOR, "h2.titulo")
+                title = title_element.text
+            except NoSuchElementException:
+                print("Título no disponible para este artículo.")
 
             # Extraer el link del artículo
-            link = title_element.find_element(By.TAG_NAME, "a").get_attribute("href")
-            
+            try:
+                link = title_element.find_element(By.TAG_NAME, "a").get_attribute("href")
+            except NoSuchElementException:
+                print("Link no disponible para este artículo.")
+
             # Extraer la imagen
-            image = article.find_element(By.TAG_NAME, "img").get_attribute("src")
-            
+            try:
+                image = article.find_element(By.CSS_SELECTOR, "div.imagen img").get_attribute("src")
+            except NoSuchElementException:
+                print("Imagen no disponible para este artículo.")
+
+            # Agregar datos extraídos a la lista
             data.append({
                 "title": title,
                 "kicker": kicker,
                 "image": image,
                 "link": link
             })
-        except Exception as e:
-            print(f"Error al procesar el artículo: {e}")
+    except TimeoutException:
+        print("No se encontraron artículos en la página dentro del tiempo límite.")
+    finally:
+        driver.quit()
 
-    driver.quit()
     return data
 
 def process_data(data):
@@ -92,5 +118,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
