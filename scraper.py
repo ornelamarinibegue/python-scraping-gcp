@@ -4,6 +4,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import pandas as pd
 from google.cloud import bigquery
 
@@ -98,6 +99,8 @@ def create_bigquery_table_if_not_exists(table_id):
         table = client.create_table(table)  # API request
         print(f"Tabla {table_id} creada satisfactoriamente.")
 
+# Si tenes credenciales en GCP , puedes usar esta función en el renglon 130
+
 def load_data_to_bigquery(df, table_id):
     create_bigquery_table_if_not_exists(table_id)  # Crear tabla si no existe
 
@@ -105,6 +108,10 @@ def load_data_to_bigquery(df, table_id):
     job = client.load_table_from_dataframe(df, table_id)
     job.result()  # Esperar a que el trabajo de carga se complete
     print(f"Datos cargados en la tabla {table_id}.")
+    
+def save_to_csv(df, filename="datos_yogonet.csv"):
+    df.to_csv(filename, index=False)
+    print(f"Datos guardados en '{filename}'.")
 
 def main():
     url = "https://www.yogonet.com/international/"
@@ -112,11 +119,16 @@ def main():
     df = process_data(data)
     print(df)
 
+    # Guardar en CSV si no hay credenciales de GCP
+    save_to_csv(df)
+
     # Define tu ID de tabla (proyecto.dataset.tabla)
     table_id = "your-project-id.your-dataset-id.your-table-id"  # Coloca tu project_id y dataset aquí
 
+"""Si tenes credenciales de GCP
     # Cargar los datos procesados en BigQuery
     load_data_to_bigquery(df, table_id)
-
+"""
+    
 if __name__ == "__main__":
     main()
