@@ -16,13 +16,13 @@ def extract_data(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get(url)
 
-    # Espera hasta que los artículos estén presentes utilizando XPath
+    # Espera hasta que los artículos estén presentes
     try:
         WebDriverWait(driver, 20).until(
-            EC.presence_of_all_elements_located((By.XPATH, "//div[contains(@class, 'contenedor_dato')]"))
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".contenedor_dato_modulo"))
         )
-
-        articles = driver.find_elements(By.XPATH, "//div[contains(@class, 'contenedor_dato')]")
+        
+        articles = driver.find_elements(By.CSS_SELECTOR, ".contenedor_dato_modulo")
         data = []
 
         for article in articles:
@@ -32,37 +32,26 @@ def extract_data(url):
             link = "No disponible"
             image = "No disponible"
 
-            # Extraer el kicker (volanta) si existe, utilizando XPath
+            # Extraer el kicker (volanta) si existe
             try:
-                kicker = article.find_element(By.XPATH, ".//span[contains(@class, 'volanta')]").text
+                kicker_element = article.find_element(By.CSS_SELECTOR, "div.volanta.fuente_roboto_slab")
+                kicker = kicker_element.text.strip()  # Usa strip() para eliminar espacios en blanco
             except NoSuchElementException:
                 print("Kicker no disponible para este artículo.")
 
-            # Extraer el título, utilizando XPath
+            # Extraer el título
             try:
-                title_element = article.find_element(By.XPATH, ".//h2[contains(@class, 'titulo')]")
-                title = title_element.text
+                title_element = article.find_element(By.CSS_SELECTOR, "h2.titulo.fuente_roboto_slab a")
+                title = title_element.text.strip()  # Usa strip() para eliminar espacios en blanco
+                link = title_element.get_attribute("href")  # Obtener el link del título
             except NoSuchElementException:
                 print("Título no disponible para este artículo.")
 
-            # Extraer el link del artículo
+            # Extraer la imagen
             try:
-                link = title_element.find_element(By.XPATH, ".//a").get_attribute("href")
-            except NoSuchElementException:
-                print("Link no disponible para este artículo.")
-
-            # Extraer la imagen, utilizando XPath
-            try:
-                image = article.find_element(By.XPATH, ".//div[contains(@class, 'imagen')]//img").get_attribute("src")
+                image = article.find_element(By.CSS_SELECTOR, "div.imagen img").get_attribute("src")
             except NoSuchElementException:
                 print("Imagen no disponible para este artículo.")
-                
-            # Imprime los datos extraídos
-            print(f"Kicker: {kicker}")
-            print(f"Título: {title}")
-            print(f"Link: {link}")
-            print(f"Imagen: {image}")
-            print("-" * 40)  # Separador entre artículos
 
             # Agregar datos extraídos a la lista
             data.append({
@@ -77,7 +66,6 @@ def extract_data(url):
         driver.quit()
 
     return data
-
 
 def process_data(data):
     df = pd.DataFrame(data)
@@ -109,8 +97,6 @@ def create_bigquery_table_if_not_exists(table_id):
         table = client.create_table(table)  # API request
         print(f"Tabla {table_id} creada satisfactoriamente.")
 
-# Si tenes credenciales en GCP , puedes usar esta función en el renglon 130
-
 def load_data_to_bigquery(df, table_id):
     create_bigquery_table_if_not_exists(table_id)  # Crear tabla si no existe
 
@@ -119,7 +105,7 @@ def load_data_to_bigquery(df, table_id):
     job.result()  # Esperar a que el trabajo de carga se complete
     print(f"Datos cargados en la tabla {table_id}.")
     
-def save_to_csv(df, filename="datos_yogonet_XPATH.csv"):
+def save_to_csv(df, filename="datos_yogonet.csv"):
     df.to_csv(filename, index=False)
     print(f"Datos guardados en '{filename}'.")
 
