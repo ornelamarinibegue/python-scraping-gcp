@@ -32,26 +32,29 @@ def extract_data(url):
             link = "No disponible"
             image = "No disponible"
 
-            # Extraer el título
-            try:
-                title_element = article.find_element(By.XPATH, ".//h2[contains(@class, 'titulo')]//a")
-                title = title_element.text.strip()  # Usa strip() para eliminar espacios en blanco
-                link = title_element.get_attribute("href")  # Obtener el link del título
-            except NoSuchElementException:
-                print("Título no disponible para este artículo.")
-
             # Extraer el kicker (volanta) si existe
             try:
-                kicker_element = article.find_element(By.XPATH, ".//div[contains(@class, 'volanta')]")
-                kicker = kicker_element.text.strip()  # Usa strip() para eliminar espacios en blanco
+                title_element = article.find_element(By.CSS_SELECTOR, "div.volanta.fuente_roboto_slab")
+                title = title_element.text.strip()  # Usa strip() para eliminar espacios en blanco
             except NoSuchElementException:
                 print("Kicker no disponible para este artículo.")
+
+            # Extraer el título
+            try:
+                kicker_element = article.find_element(By.XPATH, ".//h2[contains(@class, 'titulo')]//a")
+                kicker = kicker_element.text.strip()  # Usa strip() para eliminar espacios en blanco
+                link = kicker_element.get_attribute("href")  # Obtener el link del título
+            except NoSuchElementException:
+                print("Título no disponible para este artículo.")
 
             # Extraer la imagen
             try:
                 image = article.find_element(By.XPATH, ".//div[contains(@class, 'imagen')]//img").get_attribute("src")
             except NoSuchElementException:
                 print("Imagen no disponible para este artículo.")
+
+            # Intercambiar los valores de title y kicker
+            # title, kicker = kicker, title  # Cambia el valor de title por el de kicker y viceversa
 
             # Agregar datos extraídos a la lista
             data.append({
@@ -106,6 +109,7 @@ def load_data_to_bigquery(df, table_id):
     print(f"Datos cargados en la tabla {table_id}.")
     
 def save_to_csv(df, filename="datos_yogonet.csv"):
+    # Asegúrate de que el DataFrame se guarde correctamente
     df.to_csv(filename, index=False)
     print(f"Datos guardados en '{filename}'.")
 
