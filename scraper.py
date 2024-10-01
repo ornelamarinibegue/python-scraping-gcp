@@ -24,20 +24,13 @@ def extract_data(url):
         
         articles = driver.find_elements(By.XPATH, "//div[contains(@class, 'contenedor_dato_modulo')]")
         data = []
-
+        
         for article in articles:
             # Inicializa variables por defecto
             kicker = "No disponible"
             title = "No disponible"
             link = "No disponible"
             image = "No disponible"
-
-            # Extraer el kicker (volanta) si existe
-            try:
-                kicker_element = article.find_element(By.CSS_SELECTOR, "div.volanta.fuente_roboto_slab")
-                kicker = kicker_element.text.strip()  # Usa strip() para eliminar espacios en blanco
-            except NoSuchElementException:
-                print("Kicker no disponible para este artículo.")
 
             # Extraer el título
             try:
@@ -46,6 +39,13 @@ def extract_data(url):
                 link = title_element.get_attribute("href")  # Obtener el link del título
             except NoSuchElementException:
                 print("Título no disponible para este artículo.")
+
+            # Extraer el kicker (volanta) si existe
+            try:
+                kicker_element = article.find_element(By.XPATH, ".//div[contains(@class, 'volanta')]")
+                kicker = kicker_element.text.strip()  # Usa strip() para eliminar espacios en blanco
+            except NoSuchElementException:
+                print("Kicker no disponible para este artículo.")
 
             # Extraer la imagen
             try:
@@ -105,7 +105,7 @@ def load_data_to_bigquery(df, table_id):
     job.result()  # Esperar a que el trabajo de carga se complete
     print(f"Datos cargados en la tabla {table_id}.")
     
-def save_to_csv(df, filename="datos_yogonet_3.csv"):
+def save_to_csv(df, filename="datos_yogonet.csv"):
     df.to_csv(filename, index=False)
     print(f"Datos guardados en '{filename}'.")
 
