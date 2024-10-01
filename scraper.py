@@ -16,13 +16,13 @@ def extract_data(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get(url)
 
-    # Espera hasta que los artículos estén presentes
+    # Espera hasta que los artículos estén presentes utilizando XPATH
     try:
         WebDriverWait(driver, 20).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".contenedor_dato_modulo"))
+            EC.presence_of_all_elements_located((By.XPATH, "//div[contains(@class, 'contenedor_dato_modulo')]"))
         )
         
-        articles = driver.find_elements(By.CSS_SELECTOR, ".contenedor_dato_modulo")
+        articles = driver.find_elements(By.XPATH, "//div[contains(@class, 'contenedor_dato_modulo')]")
         data = []
 
         for article in articles:
@@ -41,7 +41,7 @@ def extract_data(url):
 
             # Extraer el título
             try:
-                title_element = article.find_element(By.CSS_SELECTOR, "h2.titulo.fuente_roboto_slab a")
+                title_element = article.find_element(By.XPATH, ".//h2[contains(@class, 'titulo')]//a")
                 title = title_element.text.strip()  # Usa strip() para eliminar espacios en blanco
                 link = title_element.get_attribute("href")  # Obtener el link del título
             except NoSuchElementException:
@@ -49,7 +49,7 @@ def extract_data(url):
 
             # Extraer la imagen
             try:
-                image = article.find_element(By.CSS_SELECTOR, "div.imagen img").get_attribute("src")
+                image = article.find_element(By.XPATH, ".//div[contains(@class, 'imagen')]//img").get_attribute("src")
             except NoSuchElementException:
                 print("Imagen no disponible para este artículo.")
 
@@ -105,7 +105,7 @@ def load_data_to_bigquery(df, table_id):
     job.result()  # Esperar a que el trabajo de carga se complete
     print(f"Datos cargados en la tabla {table_id}.")
     
-def save_to_csv(df, filename="datos_yogonet.csv"):
+def save_to_csv(df, filename="datos_yogonet_3.csv"):
     df.to_csv(filename, index=False)
     print(f"Datos guardados en '{filename}'.")
 
@@ -121,10 +121,8 @@ def main():
     # Define tu ID de tabla (proyecto.dataset.tabla)
     table_id = "your-project-id.your-dataset-id.your-table-id"  # Coloca tu project_id y dataset aquí
 
-"""Si tenes credenciales de GCP
-    # Cargar los datos procesados en BigQuery
-    load_data_to_bigquery(df, table_id)
-"""
+    # Si tienes credenciales de GCP
+    # load_data_to_bigquery(df, table_id)
     
 if __name__ == "__main__":
     main()
